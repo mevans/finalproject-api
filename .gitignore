@@ -148,6 +148,6 @@ dmypy.json
 .prof
 
 # Only for Development only
- **/migrations/**
- !**/migrations
- !**/migrations/__init__.py
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
