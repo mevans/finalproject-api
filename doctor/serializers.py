@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from core.models import User
+from doctor.models import PatientSignupToken
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -24,3 +25,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class PatientSignupTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientSignupToken
+        fields = '__all__'
