@@ -52,9 +52,10 @@ class User(AbstractUser):
         return self.email
 
 
-class Patient(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-
-
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
+
+class Patient(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='patients')
