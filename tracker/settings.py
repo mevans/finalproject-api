@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     'core',
     'doctor',
+    'patient',
 
     'rest_framework',
     'rest_framework.authtoken',
