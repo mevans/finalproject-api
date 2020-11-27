@@ -1,3 +1,6 @@
+from dj_rest_auth.app_settings import LoginSerializer
+from dj_rest_auth.views import LoginView
+from rest_framework import exceptions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
@@ -36,3 +39,16 @@ def new_patient(request):
     signup_token = PatientSignupToken.objects.create(doctor=doctor)
     serializer = PatientSignupTokenSerializer(signup_token)
     return Response(serializer.data)
+
+
+class DoctorLoginSerializer(LoginSerializer):
+    def validate(self, attrs):
+        validated = super().validate(attrs)
+        user = validated['user']
+        if not user.is_doctor:
+            raise exceptions.ValidationError("Only doctors can login to this site")
+        return validated
+
+
+class DoctorLoginView(LoginView):
+    serializer_class = DoctorLoginSerializer

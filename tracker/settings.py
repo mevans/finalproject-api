@@ -48,7 +48,8 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication'
+        'rest_framework.authentication.TokenAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ]
 }
 
@@ -112,6 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'core.User'
+REST_USE_JWT = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
