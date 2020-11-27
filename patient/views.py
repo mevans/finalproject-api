@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from core.models import Patient
+from doctor.models import PatientSignupToken
 from patient.serializers import PatientRegistrationSerializer
 
 
@@ -24,7 +25,12 @@ def patient_registration_view(request):
         data['response'] = "Successfully registered a new patient"
         data['email'] = user.email
 
-        patient = Patient.objects.create(user=user)
+        token = PatientSignupToken.objects.get(id=serializer.validated_data['token'])
+        token.delete()
+        doctor = token.doctor
+        data['doctor'] = doctor.pk
+
+        patient = Patient.objects.create(user=user, doctor=token.doctor)
         patient.save()
 
         return Response(data)
