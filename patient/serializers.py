@@ -1,20 +1,16 @@
 from dj_rest_auth.app_settings import LoginSerializer
 from rest_framework import serializers, exceptions
 
-from core.models import User
+from core.models import Patient
+from core.serializers import RegistrationSerializer
 from doctor.models import PatientSignupToken
 
 
-class PatientRegistrationSerializer(serializers.ModelSerializer):
+class PatientRegistrationSerializer(RegistrationSerializer):
     token = serializers.CharField(write_only=True)
-    password2 = serializers.CharField(write_only=True)
 
-    class Meta:
-        model = User
+    class Meta(RegistrationSerializer.Meta):
         fields = ['email', 'password', 'password2', 'token']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
 
     def validate_token(self, value):
         try:
@@ -23,17 +19,15 @@ class PatientRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Invalid token')
         return value
 
-    def save(self):
-        user = User(email=self.validated_data['email'])
-        password = self.validated_data['password']
-        password2 = self.validated_data['password2']
+    def handle_save(self, user):
+        user.is_patient = True
+        super().handle_save(user)
+        token = PatientSignupToken.objects.get(id=self.validated_data['token'])
 
-        if password != password2:
-            raise serializers.ValidationError({'password': 'Passwords must match.'})
+        patient = Patient.objects.create(user=user, doctor=token.doctor)
+        patient.save()
 
-        user.set_password(password)
-        user.save()
-        return user
+        token.delete()
 
 
 class PatientLoginSerializer(LoginSerializer):
