@@ -1,3 +1,4 @@
+from dj_rest_auth.views import LoginView
 from django.shortcuts import render
 
 # Create your views here.
@@ -6,7 +7,7 @@ from rest_framework.response import Response
 
 from core.models import Patient
 from doctor.models import PatientSignupToken
-from patient.serializers import PatientRegistrationSerializer
+from patient.serializers import PatientRegistrationSerializer, PatientLoginSerializer
 
 
 @api_view(['POST'])
@@ -34,3 +35,7 @@ def patient_registration_view(request):
         patient.save()
 
         return Response(data)
+
+
+class PatientLoginView(LoginView):
+    serializer_class = PatientLoginSerializer

@@ -1,4 +1,5 @@
-from rest_framework import serializers
+from dj_rest_auth.app_settings import LoginSerializer
+from rest_framework import serializers, exceptions
 
 from core.models import User
 from doctor.models import PatientSignupToken
@@ -33,3 +34,12 @@ class PatientRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class PatientLoginSerializer(LoginSerializer):
+    def validate(self, attrs):
+        validated = super().validate(attrs)
+        user = validated['user']
+        if not user.is_patient:
+            raise exceptions.ValidationError("Only patients can login to this site")
+        return validated
