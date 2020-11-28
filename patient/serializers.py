@@ -23,6 +23,9 @@ class PatientRegistrationSerializer(RegistrationSerializer):
         user.is_patient = True
         super().handle_save(user)
         token = PatientSignupToken.objects.get(id=self.validated_data['token'])
+        user.first_name = token.first_name
+        user.last_name = token.last_name
+        user.save()
 
         patient = Patient.objects.create(user=user, doctor=token.doctor)
         patient.save()
