@@ -1,6 +1,6 @@
 from django.urls import path
 
-from doctor.views import new_patient, DoctorLoginView, DoctorRegistrationView
+from doctor.views import DoctorLoginView, DoctorRegistrationView, new_patient
 
 urlpatterns = [
     path('auth/register', DoctorRegistrationView.as_view(), name="doctor register"),
