@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from core.models import Doctor
 from doctor.models import PatientSignupToken
 from doctor.permissions import IsDoctor
-from doctor.serializers import RegistrationSerializer, PatientSignupTokenSerializer
+from doctor.serializers import RegistrationSerializer, PatientSignupTokenSerializer, DoctorLoginSerializer
 
 
 @api_view(['POST'])
@@ -39,15 +39,6 @@ def new_patient(request):
     signup_token = PatientSignupToken.objects.create(doctor=doctor)
     serializer = PatientSignupTokenSerializer(signup_token)
     return Response(serializer.data)
-
-
-class DoctorLoginSerializer(LoginSerializer):
-    def validate(self, attrs):
-        validated = super().validate(attrs)
-        user = validated['user']
-        if not user.is_doctor:
-            raise exceptions.ValidationError("Only doctors can login to this site")
-        return validated
 
 
 class DoctorLoginView(LoginView):
