@@ -1,35 +1,17 @@
 from dj_rest_auth.app_settings import LoginSerializer
 from rest_framework import serializers, exceptions
 
-from core.models import User, Doctor
+from core.models import Doctor
+from core.serializers import RegistrationSerializer
 from doctor.models import PatientSignupToken
 
 
-class DoctorRegistrationSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = User
-        fields = ['email', 'password', 'password2']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
-
-    def save(self):
-        user = User(email=self.validated_data['email'])
-        password = self.validated_data['password']
-        password2 = self.validated_data['password2']
-
-        if password != password2:
-            raise serializers.ValidationError({'password': 'Passwords must match.'})
-
-        user.set_password(password)
+class DoctorRegistrationSerializer(RegistrationSerializer):
+    def handle_save(self, user):
         user.is_doctor = True
-        user.save()
-
+        super().handle_save(user)
         doctor = Doctor.objects.create(user=user)
         doctor.save()
-        return user
 
 
 class PatientSignupTokenSerializer(serializers.ModelSerializer):
