@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
-from core.models import User
+from core.models import User, Patient
+
+
+class PatientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Patient
+        fields = '__all__'
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
