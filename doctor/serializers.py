@@ -1,11 +1,11 @@
 from dj_rest_auth.app_settings import LoginSerializer
 from rest_framework import serializers, exceptions
 
-from core.models import User
+from core.models import User, Doctor
 from doctor.models import PatientSignupToken
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class DoctorRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True)
 
     class Meta:
@@ -24,7 +24,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'password': 'Passwords must match.'})
 
         user.set_password(password)
+        user.is_doctor = True
         user.save()
+
+        doctor = Doctor.objects.create(user=user)
+        doctor.save()
         return user
 
 
