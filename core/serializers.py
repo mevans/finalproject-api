@@ -3,6 +3,11 @@ from rest_framework import serializers
 from core.models import User, Patient
 
 
+class JWTSerializer(serializers.Serializer):
+    access = serializers.CharField(source='access_token')
+    refresh = serializers.CharField(source='refresh_token')
+
+
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient

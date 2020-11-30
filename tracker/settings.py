@@ -120,8 +120,12 @@ REST_USE_JWT = True
 SITE_ID = 1
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=365)
+}
+
+REST_AUTH_SERIALIZERS = {
+    'JWT_SERIALIZER': 'core.serializers.JWTSerializer'
 }
 
 # Internationalization
