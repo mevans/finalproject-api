@@ -6,6 +6,12 @@ from core.serializers import RegistrationSerializer
 from doctor.models import PatientSignupToken
 
 
+class DoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Doctor
+        fields = "__all__"
+
+
 class DoctorRegistrationSerializer(RegistrationSerializer):
     def handle_save(self, user):
         user.is_doctor = True

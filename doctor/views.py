@@ -1,9 +1,11 @@
 from dj_rest_auth.views import LoginView
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 
+from core.models import Doctor
 from core.views import RegistrationView
 from doctor.permissions import IsDoctor
-from doctor.serializers import DoctorRegistrationSerializer, PatientSignupTokenSerializer, DoctorLoginSerializer
+from doctor.serializers import DoctorRegistrationSerializer, PatientSignupTokenSerializer, DoctorLoginSerializer, \
+    DoctorSerializer
 
 
 class DoctorRegistrationView(RegistrationView):
@@ -21,3 +23,12 @@ class PatientSignupView(CreateAPIView):
 
 class DoctorLoginView(LoginView):
     serializer_class = DoctorLoginSerializer
+
+
+class DoctorUserView(RetrieveAPIView):
+    serializer_class = DoctorSerializer
+
+    permission_classes = [IsDoctor]
+
+    def get_object(self):
+        return Doctor.objects.get(user=self.request.user)
