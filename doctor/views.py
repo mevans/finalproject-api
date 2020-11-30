@@ -1,4 +1,4 @@
-from dj_rest_auth.views import LoginView
+from dj_rest_auth.views import LoginView, LogoutView
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 
 from core.models import Doctor
@@ -23,6 +23,10 @@ class PatientSignupView(CreateAPIView):
 
 class DoctorLoginView(LoginView):
     serializer_class = DoctorLoginSerializer
+
+
+class DoctorLogoutView(LogoutView):
+    permission_classes = [IsDoctor]
 
 
 class DoctorUserView(RetrieveAPIView):

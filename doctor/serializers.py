@@ -2,11 +2,13 @@ from dj_rest_auth.app_settings import LoginSerializer
 from rest_framework import serializers, exceptions
 
 from core.models import Doctor
-from core.serializers import RegistrationSerializer
+from core.serializers import RegistrationSerializer, UserSerializer
 from doctor.models import PatientSignupToken
 
 
 class DoctorSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Doctor
         fields = "__all__"

@@ -8,6 +8,12 @@ class JWTSerializer(serializers.Serializer):
     refresh = serializers.CharField(source='refresh_token')
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'is_doctor', 'is_patient']
+
+
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
