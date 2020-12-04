@@ -15,8 +15,16 @@ class DoctorSerializer(serializers.ModelSerializer):
 
 
 class DoctorRegistrationSerializer(RegistrationSerializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+
+    class Meta(RegistrationSerializer.Meta):
+        fields = [*RegistrationSerializer.Meta.fields, 'first_name', 'last_name']
+
     def handle_save(self, user):
         user.is_doctor = True
+        user.first_name = self.validated_data['first_name']
+        user.last_name = self.validated_data['last_name']
         super().handle_save(user)
         doctor = Doctor.objects.create(user=user)
         doctor.save()
