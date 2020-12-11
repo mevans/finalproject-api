@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import User, Patient
+from core.models import User
 
 
 class JWTSerializer(serializers.Serializer):
@@ -12,12 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'is_doctor', 'is_patient']
-
-
-class PatientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Patient
-        fields = '__all__'
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

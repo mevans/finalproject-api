@@ -24,7 +24,7 @@ SECRET_KEY = '&z5swzqxt32f@an*a$(9ax431cwo0fefdv7@g7r9-$1&u6ad9n'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.25', '127.0.0.1', 'localhost', '10.0.2.2']
 
 # Application definition
 
@@ -121,7 +121,7 @@ SITE_ID = 1
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(seconds=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=365)
+    # 'REFRESH_TOKEN_LIFETIME': timedelta(days=365)
 }
 
 REST_AUTH_SERIALIZERS = {

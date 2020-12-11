@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 
 from core.models import Doctor
-from core.serializers import PatientSerializer
 from doctor.permissions import IsDoctor
+from patient.serializers import PatientSerializer
 
 
 class PatientsViewSet(viewsets.ModelViewSet):
