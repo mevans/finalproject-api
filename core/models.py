@@ -59,3 +59,42 @@ class Doctor(models.Model):
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='patients')
+    variables = models.ManyToManyField('Variable', through='VariableInstance')
+
+
+class Report(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='reports')
+    date = models.DateTimeField(auto_now_add=True)
+
+
+class Variable(models.Model):
+    name = models.CharField('name', max_length=150)
+
+
+class VariableInstance(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    variable = models.ForeignKey(Variable, on_delete=models.CASCADE)
+
+
+class AbstractVariableType(models.Model):
+    variable = models.OneToOneField(Variable, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class RangeVariableType(AbstractVariableType):
+    min_value = models.PositiveIntegerField(default=1, blank=False, null=False)
+    max_value = models.PositiveIntegerField(default=5, blank=False, null=False)
+
+
+class AbstractVariableResponse(models.Model):
+    variable = models.ForeignKey(Variable, on_delete=models.CASCADE)
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class RangeVariableTypeResponse(AbstractVariableResponse):
+    response = models.PositiveIntegerField(blank=False)
