@@ -61,6 +61,9 @@ class Patient(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='patients')
     variables = models.ManyToManyField('Variable', through='VariableInstance')
 
+    def __str__(self):
+        return '({}) {}'.format(self.user.id, self.user.email)
+
 
 class Report(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='reports')
@@ -70,10 +73,16 @@ class Report(models.Model):
 class Variable(models.Model):
     name = models.CharField('name', max_length=150)
 
+    def __str__(self):
+        return '({}) {}'.format(self.id, self.name)
+
 
 class VariableInstance(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     variable = models.ForeignKey(Variable, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '({}) Patient: {}, Variable: {}'.format(self.id, self.patient, self.variable)
 
 
 class AbstractVariableType(models.Model):

@@ -11,7 +11,7 @@ class JWTSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'is_doctor', 'is_patient']
+        fields = ['id', 'email', 'first_name', 'last_name', 'is_doctor', 'is_patient']
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
