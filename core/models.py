@@ -55,6 +55,9 @@ class User(AbstractUser):
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
+    def __str__(self):
+        return '({}) {}'.format(self.user.id, self.user.email)
+
 
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -72,6 +75,7 @@ class Report(models.Model):
 
 class Variable(models.Model):
     name = models.CharField('name', max_length=150)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='variables')
 
     def __str__(self):
         return '({}) {}'.format(self.id, self.name)
@@ -86,7 +90,7 @@ class VariableInstance(models.Model):
 
 
 class AbstractVariableType(models.Model):
-    variable = models.OneToOneField(Variable, on_delete=models.CASCADE)
+    variable = models.OneToOneField(Variable, on_delete=models.CASCADE, related_name='type')
 
     class Meta:
         abstract = True

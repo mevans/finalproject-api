@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import User
+from core.models import User, Variable, RangeVariableType
 
 
 class JWTSerializer(serializers.Serializer):
@@ -38,3 +38,17 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)
         self.handle_save(user)
         return user
+
+
+class RangeVariableTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RangeVariableType
+        fields = '__all__'
+
+
+class VariableSerializer(serializers.ModelSerializer):
+    range = RangeVariableTypeSerializer(source='type')
+
+    class Meta:
+        model = Variable
+        fields = '__all__'
