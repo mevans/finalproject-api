@@ -44,12 +44,14 @@ class RangeVariableTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = RangeVariableType
         fields = '__all__'
+        read_only_fields = ['variable']
 
 
 class ChoiceVariableChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChoiceVariableChoice
         fields = '__all__'
+        read_only_fields = ['choice_type']
 
 
 class ChoiceVariableTypeSerializer(serializers.ModelSerializer):
@@ -58,15 +60,17 @@ class ChoiceVariableTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChoiceVariableType
         fields = '__all__'
+        read_only_fields = ['variable']
 
 
 class VariableSerializer(serializers.ModelSerializer):
-    range = RangeVariableTypeSerializer(source='get_range')
-    choice = ChoiceVariableTypeSerializer(source='get_choice')
+    range = RangeVariableTypeSerializer(source='get_range', allow_null=True)
+    choice = ChoiceVariableTypeSerializer(source='get_choice', allow_null=True)
 
     class Meta:
         model = Variable
         fields = '__all__'
+        read_only_fields = ['doctor']
 
     def to_representation(self, instance):
         types = ['range', 'choice']
@@ -78,3 +82,28 @@ class VariableSerializer(serializers.ModelSerializer):
                 representation[key] = t
                 break
         return representation
+
+    def validate(self, attrs):
+        range_data = attrs['get_range']
+        choice_data = attrs['get_choice']
+        if range_data is None and choice_data is None:
+            raise serializers.ValidationError("Must supply either a range or choice type")
+        if range_data is not None and choice_data is not None:
+            raise serializers.ValidationError("Can't supply both a range and choice type")
+        if choice_data is not None and len(choice_data['choices']) is 0:
+            raise serializers.ValidationError("Must supply at least one choice")
+        return super().validate(attrs)
+
+    def create(self, validated_data):
+        validated_data['doctor'] = self.context['request'].user.doctor
+        range_data = validated_data.pop('get_range')
+        choice_data = validated_data.pop('get_choice')
+        variable = super().create(validated_data)
+        if range_data is not None:
+            range_type = RangeVariableType.objects.create(**range_data, variable=variable)
+        if choice_data is not None:
+            choices = choice_data.pop('choices')
+            choice_type = ChoiceVariableType.objects.create(**choice_data, variable=variable)
+            for choice in choices:
+                choice = ChoiceVariableChoice.objects.create(**choice, choice_type=choice_type)
+        return variable
