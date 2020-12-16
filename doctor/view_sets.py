@@ -21,4 +21,4 @@ class VariablesViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         doctor = Doctor.objects.get(user=self.request.user)
-        return doctor.variables.select_related('type')
+        return doctor.variables

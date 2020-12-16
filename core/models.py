@@ -80,6 +80,17 @@ class Variable(models.Model):
     def __str__(self):
         return '({}) {}'.format(self.id, self.name)
 
+    def get_range(self):
+        try:
+            return RangeVariableType.objects.get(variable=self)
+        except RangeVariableType.DoesNotExist:
+            return None
+
+    def get_choice(self):
+        try:
+            return ChoiceVariableType.objects.get(variable=self)
+        except ChoiceVariableType.DoesNotExist:
+            return None
 
 class VariableInstance(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -90,7 +101,7 @@ class VariableInstance(models.Model):
 
 
 class AbstractVariableType(models.Model):
-    variable = models.OneToOneField(Variable, on_delete=models.CASCADE, related_name='type')
+    variable = models.OneToOneField(Variable, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -99,6 +110,15 @@ class AbstractVariableType(models.Model):
 class RangeVariableType(AbstractVariableType):
     min_value = models.PositiveIntegerField(default=1, blank=False, null=False)
     max_value = models.PositiveIntegerField(default=5, blank=False, null=False)
+
+
+class ChoiceVariableType(AbstractVariableType):
+    pass
+
+
+class ChoiceVariableChoice(models.Model):
+    choice_type = models.ForeignKey(ChoiceVariableType, on_delete=models.CASCADE, related_name='choices')
+    value = models.CharField(max_length=150, blank=False, null=False)
 
 
 class AbstractVariableResponse(models.Model):
@@ -111,3 +131,7 @@ class AbstractVariableResponse(models.Model):
 
 class RangeVariableTypeResponse(AbstractVariableResponse):
     response = models.PositiveIntegerField(blank=False)
+
+
+class ChoiceVariableTypeResponse(AbstractVariableResponse):
+    response = models.ForeignKey(ChoiceVariableChoice, on_delete=models.CASCADE)
