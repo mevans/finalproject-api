@@ -92,6 +92,10 @@ class Variable(models.Model):
         except ChoiceVariableType.DoesNotExist:
             return None
 
+    def get_used_by(self):
+        return Patient.objects.filter(variableinstance__variable__exact=self)
+
+
 class VariableInstance(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     variable = models.ForeignKey(Variable, on_delete=models.CASCADE)

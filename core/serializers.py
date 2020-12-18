@@ -66,6 +66,7 @@ class ChoiceVariableTypeSerializer(serializers.ModelSerializer):
 class VariableSerializer(serializers.ModelSerializer):
     range = RangeVariableTypeSerializer(source='get_range', allow_null=True)
     choice = ChoiceVariableTypeSerializer(source='get_choice', allow_null=True)
+    used_by = serializers.PrimaryKeyRelatedField(source='get_used_by', many=True, read_only=True)
 
     class Meta:
         model = Variable
