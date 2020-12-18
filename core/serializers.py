@@ -84,13 +84,13 @@ class VariableSerializer(serializers.ModelSerializer):
         return representation
 
     def validate(self, attrs):
-        range_data = attrs['get_range']
-        choice_data = attrs['get_choice']
+        range_data = attrs.get('get_range')
+        choice_data = attrs.get('get_choice')
         if range_data is None and choice_data is None:
             raise serializers.ValidationError("Must supply either a range or choice type")
         if range_data is not None and choice_data is not None:
             raise serializers.ValidationError("Can't supply both a range and choice type")
-        if choice_data is not None and len(choice_data['choices']) is 0:
+        if choice_data is not None and len(choice_data.get('choices', [])) is 0:
             raise serializers.ValidationError("Must supply at least one choice")
         return super().validate(attrs)
 
