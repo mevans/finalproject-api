@@ -48,6 +48,8 @@ class RangeVariableTypeSerializer(serializers.ModelSerializer):
 
 
 class ChoiceVariableChoiceSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+
     class Meta:
         model = ChoiceVariableChoice
         fields = '__all__'
@@ -107,4 +109,30 @@ class VariableSerializer(serializers.ModelSerializer):
             choice_type = ChoiceVariableType.objects.create(**choice_data, variable=variable)
             for choice in choices:
                 choice = ChoiceVariableChoice.objects.create(**choice, choice_type=choice_type)
+        return variable
+
+    def update(self, instance, validated_data):
+        range_data = validated_data.pop('get_range')
+        choice_data = validated_data.pop('get_choice')
+        variable = super().update(instance, validated_data)
+        if range_data is not None:
+            range_var = instance.rangevariabletype
+            range_var.min_value = range_data.pop('min_value')
+            range_var.max_value = range_data.pop('max_value')
+            range_var.save()
+        if choice_data is not None:
+            choice_var = instance.choicevariabletype
+            choices = choice_data.pop('choices')
+            choice_mapping = {choice.id: choice for choice in choice_var.choices.all()}
+            for choice in choices:
+                choice_id = choice.get('id', None)
+                if choice_id is None:
+                    ChoiceVariableChoice.objects.create(choice_type=choice_var, **choice)
+                else:
+                    c = choice_mapping.get(choice_id, None)
+                    c.value = choice.pop('value', None)
+                    c.save()
+            for choice_id, choice in choice_mapping.items():
+                if choice_id not in [c.get('id', None) for c in choices]:
+                    choice.delete()
         return variable
