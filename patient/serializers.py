@@ -1,21 +1,26 @@
 from dj_rest_auth.app_settings import LoginSerializer
+from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers, exceptions
 
 from core.models import Patient
-from core.serializers import RegistrationSerializer, UserSerializer
+from core.serializers import RegistrationSerializer, UserSerializer, VariableInstanceSerializer
 from doctor.models import PatientSignupToken
 from doctor.serializers import DoctorSerializer
 
 
-class PatientSerializer(serializers.ModelSerializer):
+class PatientSerializer(FlexFieldsModelSerializer):
     user = UserSerializer(read_only=True)
     doctor = DoctorSerializer(read_only=True)
     first_name = serializers.CharField(write_only=True)
     last_name = serializers.CharField(write_only=True)
+    instances = serializers.PrimaryKeyRelatedField(source='get_instances', many=True, read_only=True)
 
     class Meta:
         model = Patient
         fields = '__all__'
+        expandable_fields = {
+            'instances': (VariableInstanceSerializer, {'many': True, 'source': 'get_instances'})
+        }
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

@@ -67,6 +67,9 @@ class Patient(models.Model):
     def __str__(self):
         return '({}) {}'.format(self.user.id, self.user.email)
 
+    def get_instances(self):
+        return VariableInstance.objects.filter(patient=self)
+
 
 class Report(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='reports')

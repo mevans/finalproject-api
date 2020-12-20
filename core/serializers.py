@@ -1,6 +1,7 @@
+from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
-from core.models import User, Variable, RangeVariableType, ChoiceVariableType, ChoiceVariableChoice
+from core.models import User, Variable, RangeVariableType, ChoiceVariableType, ChoiceVariableChoice, VariableInstance
 
 
 class JWTSerializer(serializers.Serializer):
@@ -136,3 +137,12 @@ class VariableSerializer(serializers.ModelSerializer):
                 if choice_id not in [c.get('id', None) for c in choices]:
                     choice.delete()
         return variable
+
+
+class VariableInstanceSerializer(FlexFieldsModelSerializer):
+    class Meta:
+        model = VariableInstance
+        fields = '__all__'
+        expandable_fields = {
+            'variable': VariableSerializer
+        }
