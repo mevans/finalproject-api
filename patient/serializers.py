@@ -9,7 +9,9 @@ from doctor.serializers import DoctorSerializer
 
 class PatientSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    doctor = DoctorSerializer()
+    doctor = DoctorSerializer(read_only=True)
+    first_name = serializers.CharField(write_only=True)
+    last_name = serializers.CharField(write_only=True)
 
     class Meta:
         model = Patient
@@ -21,6 +23,15 @@ class PatientSerializer(serializers.ModelSerializer):
         for key in user_representation:
             representation[key] = user_representation[key]
         return representation
+
+    def update(self, instance, validated_data):
+        user_fields = ['first_name', 'last_name']
+        for field in user_fields:
+            value = validated_data.pop(field, None)
+            if value is not None:
+                setattr(instance.user, field, value)
+        instance.user.save()
+        return super().update(instance, validated_data)
 
 
 class PatientRegistrationSerializer(RegistrationSerializer):
