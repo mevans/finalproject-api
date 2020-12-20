@@ -48,7 +48,7 @@ class RangeVariableTypeSerializer(serializers.ModelSerializer):
 
 
 class ChoiceVariableChoiceSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(required=False)
 
     class Meta:
         model = ChoiceVariableChoice
