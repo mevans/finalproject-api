@@ -153,6 +153,18 @@ class RangeVariableTypeResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = RangeVariableTypeResponse
         fields = '__all__'
+        read_only_fields = ['report']
+
+    def validate(self, attrs):
+        variable = attrs['variable']
+        try:
+            range_type = RangeVariableType.objects.get(variable=variable)
+        except RangeVariableType.DoesNotExist:
+            raise serializers.ValidationError("Can only submit a range response for a range variable")
+        response = attrs['response']
+        if response < range_type.min_value or response > range_type.max_value:
+            raise serializers.ValidationError("Response out of range")
+        return attrs
 
 
 class ChoiceVariableTypeResponseSerializer(serializers.ModelSerializer):
@@ -162,12 +174,18 @@ class ChoiceVariableTypeResponseSerializer(serializers.ModelSerializer):
 
 
 class ReportSerializer(serializers.ModelSerializer):
-    range_responses = RangeVariableTypeResponseSerializer(many=True, source='get_range_responses')
-    choice_responses = ChoiceVariableTypeResponseSerializer(many=True, source='get_choice_responses')
+    range_responses = RangeVariableTypeResponseSerializer(many=True, source='get_range_responses', required=False)
+    choice_responses = ChoiceVariableTypeResponseSerializer(many=True, source='get_choice_responses', required=False)
 
     class Meta:
         model = Report
         fields = '__all__'
+        read_only_fields = ['patient']
 
-    def to_representation(self, instance):
-        return super().to_representation(instance)
+    def create(self, validated_data):
+        validated_data['patient'] = self.context['request'].user.patient
+        range_responses = validated_data.pop('get_range_responses', [])
+        report = super().create(validated_data)
+        for range_response in range_responses:
+            RangeVariableTypeResponse.objects.create(report=report, **range_response)
+        return report

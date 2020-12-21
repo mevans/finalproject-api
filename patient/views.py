@@ -1,7 +1,8 @@
 from dj_rest_auth.views import LoginView
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView, CreateAPIView
 
 from core.models import Patient
+from core.serializers import ReportSerializer
 from core.views import RegistrationView
 from patient.permissions import IsPatient
 from patient.serializers import PatientRegistrationSerializer, PatientLoginSerializer, PatientSerializer
@@ -22,3 +23,8 @@ class PatientUserView(RetrieveAPIView):
 
     def get_object(self):
         return Patient.objects.get(user=self.request.user)
+
+
+class SubmitReport(CreateAPIView):
+    serializer_class = ReportSerializer
+    permission_classes = [IsPatient]
