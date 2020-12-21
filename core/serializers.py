@@ -171,6 +171,19 @@ class ChoiceVariableTypeResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChoiceVariableTypeResponse
         fields = '__all__'
+        read_only_fields = ['report']
+
+    def validate(self, attrs):
+        variable = attrs['variable']
+        try:
+            choice_type = ChoiceVariableType.objects.get(variable=variable)
+        except ChoiceVariableType.DoesNotExist:
+            raise serializers.ValidationError("Can only submit a choice response for a choice variable")
+
+        response = attrs['response']
+        if response.choice_type != choice_type:
+            raise serializers.ValidationError("Invalid response & variable combination")
+        return attrs
 
 
 class ReportSerializer(serializers.ModelSerializer):
@@ -185,7 +198,13 @@ class ReportSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['patient'] = self.context['request'].user.patient
         range_responses = validated_data.pop('get_range_responses', [])
+        choice_responses = validated_data.pop('get_choice_responses', [])
         report = super().create(validated_data)
+
         for range_response in range_responses:
             RangeVariableTypeResponse.objects.create(report=report, **range_response)
+
+        for choice_response in choice_responses:
+            ChoiceVariableTypeResponse.objects.create(report=report, **choice_response)
+
         return report
