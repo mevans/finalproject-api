@@ -75,6 +75,12 @@ class Report(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='reports')
     date = models.DateTimeField(auto_now_add=True)
 
+    def get_range_responses(self):
+        return RangeVariableTypeResponse.objects.filter(report=self)
+
+    def get_choice_responses(self):
+        return ChoiceVariableTypeResponse.objects.filter(report=self)
+
 
 class Variable(models.Model):
     name = models.CharField('name', max_length=150)

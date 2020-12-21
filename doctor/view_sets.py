@@ -2,8 +2,8 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from core.models import Doctor, Variable, VariableInstance
-from core.serializers import VariableSerializer
+from core.models import Doctor, Variable, VariableInstance, Report
+from core.serializers import VariableSerializer, ReportSerializer
 from doctor.permissions import IsDoctor
 from patient.serializers import PatientSerializer
 
@@ -44,3 +44,12 @@ class VariablesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         doctor = Doctor.objects.get(user=self.request.user)
         return doctor.variables
+
+
+class ReportsViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsDoctor]
+    serializer_class = ReportSerializer
+
+    def get_queryset(self):
+        doctor = Doctor.objects.get(user=self.request.user)
+        return Report.objects.filter(patient__in=doctor.patients.all())

@@ -1,7 +1,8 @@
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
-from core.models import User, Variable, RangeVariableType, ChoiceVariableType, ChoiceVariableChoice, VariableInstance
+from core.models import User, Variable, RangeVariableType, ChoiceVariableType, ChoiceVariableChoice, VariableInstance, \
+    Report, RangeVariableTypeResponse, ChoiceVariableTypeResponse
 
 
 class JWTSerializer(serializers.Serializer):
@@ -146,3 +147,27 @@ class VariableInstanceSerializer(FlexFieldsModelSerializer):
         expandable_fields = {
             'variable': VariableSerializer
         }
+
+
+class RangeVariableTypeResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RangeVariableTypeResponse
+        fields = '__all__'
+
+
+class ChoiceVariableTypeResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChoiceVariableTypeResponse
+        fields = '__all__'
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    range_responses = RangeVariableTypeResponseSerializer(many=True, source='get_range_responses')
+    choice_responses = ChoiceVariableTypeResponseSerializer(many=True, source='get_choice_responses')
+
+    class Meta:
+        model = Report
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        return super().to_representation(instance)
