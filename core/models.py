@@ -74,6 +74,7 @@ class Patient(models.Model):
 class Report(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='reports')
     date = models.DateTimeField(auto_now_add=True)
+    note = models.TextField(null=True, blank=True)
 
     def get_range_responses(self):
         return RangeVariableTypeResponse.objects.filter(report=self)
