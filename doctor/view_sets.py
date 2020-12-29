@@ -36,6 +36,11 @@ class PatientsViewSet(viewsets.ModelViewSet):
         variable_instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=['get'])
+    def reports(self, request, pk=None):
+        patient = self.get_object()
+        return Response(ReportSerializer(patient.reports, many=True).data)
+
 
 class VariablesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsDoctor]
