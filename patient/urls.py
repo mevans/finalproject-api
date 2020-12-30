@@ -1,9 +1,11 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from patient.views import PatientLoginView, PatientRegistrationView, PatientUserView, SubmitReport, VariablesView
+from patient.views import PatientLoginView, PatientRegistrationView, PatientUserView, SubmitReport, VariablesView, \
+    PatientVerifyTokenView
 
 urlpatterns = [
+    path('auth/verify-token', PatientVerifyTokenView.as_view(), name="patient verify token"),
     path('auth/register', PatientRegistrationView.as_view(), name="patient register"),
     path('auth/login', PatientLoginView.as_view(), name="patient login"),
     path('auth/refresh-token', TokenRefreshView.as_view(), name="patient refresh token"),
