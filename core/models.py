@@ -63,6 +63,7 @@ class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='patients')
     variables = models.ManyToManyField('Variable', through='VariableInstance')
+    fcm_token = models.CharField(max_length=255, null=True, blank=False)
 
     def __str__(self):
         return '({}) {}'.format(self.user.id, self.user.email)
