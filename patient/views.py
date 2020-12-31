@@ -8,16 +8,17 @@ from core.models import Patient
 from core.serializers import ReportSerializer, VariableInstanceSerializer
 from core.views import RegistrationView
 from doctor.models import PatientSignupToken
+from doctor.serializers import PatientSignupTokenSerializer
 from patient.permissions import IsPatient
 from patient.serializers import PatientRegistrationSerializer, PatientLoginSerializer, PatientSerializer
 
 
 class PatientVerifyTokenView(APIView):
-    def post(self, request, format=None):
+    def post(self, request):
         unverified_token = request.data.get('token', None)
         try:
             token = PatientSignupToken.objects.get(id=unverified_token)
-            return Response()
+            return Response(data=PatientSignupTokenSerializer(token).data)
         except PatientSignupToken.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
