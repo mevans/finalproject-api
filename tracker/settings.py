@@ -45,7 +45,8 @@ INSTALLED_APPS = [
 
     'dj_rest_auth',
 
-    'corsheaders'
+    'corsheaders',
+    'fcm_django'
 ]
 
 REST_FRAMEWORK = {
@@ -148,3 +149,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": "AAAA_alpeRc:APA91bHfjajO0isrq6PNw75dwneWxfXYPIBRi7a7bY0j9138BJRomd-x5H6wm9UNVAr4xoN76kQ1UOUu0ZPHuzPx6J7Y4IfzYeDi-7rq0ulP2XNNQYhnZCIm3bKc_2GYN3k55Z04p0eU",
+    "ONE_DEVICE_PER_USER": True,
+    "DELETE_INACTIVE_DEVICES": True,
+}
