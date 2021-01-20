@@ -1,7 +1,7 @@
 from dj_rest_auth.app_settings import LoginSerializer
 from rest_framework import serializers, exceptions
 
-from core.models import Doctor
+from core.models import Doctor, User
 from core.serializers import RegistrationSerializer, UserSerializer
 from doctor.models import PatientSignupToken
 
@@ -19,6 +19,7 @@ class DoctorSerializer(serializers.ModelSerializer):
         for key in user_representation:
             representation[key] = user_representation[key]
         return representation
+
 
 class DoctorRegistrationSerializer(RegistrationSerializer):
     first_name = serializers.CharField()
@@ -40,6 +41,13 @@ class PatientSignupTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientSignupToken
         fields = '__all__'
+
+    def validate_email(self, value):
+        try:
+            User.objects.get(email=value)
+            raise serializers.ValidationError("A user with this email already exists")
+        except User.DoesNotExist:
+            return value
 
 
 class DoctorLoginSerializer(LoginSerializer):
