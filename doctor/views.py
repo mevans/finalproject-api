@@ -4,7 +4,7 @@ from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from core.models import Doctor
 from core.views import RegistrationView
 from doctor.permissions import IsDoctor
-from doctor.serializers import DoctorRegistrationSerializer, PatientSignupTokenSerializer, DoctorLoginSerializer, \
+from doctor.serializers import DoctorRegistrationSerializer, PatientInviteSerializer, DoctorLoginSerializer, \
     DoctorSerializer
 
 
@@ -13,7 +13,7 @@ class DoctorRegistrationView(RegistrationView):
 
 
 class PatientSignupView(CreateAPIView):
-    serializer_class = PatientSignupTokenSerializer
+    serializer_class = PatientInviteSerializer
     permission_classes = [IsDoctor]
 
     def post(self, request, *args, **kwargs):

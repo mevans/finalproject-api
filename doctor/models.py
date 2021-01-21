@@ -1,10 +1,14 @@
+from datetime import datetime, timedelta
+
+import jwt
 from django.db import models
 from django.utils.crypto import get_random_string
 
 from core.models import Doctor
+from tracker import settings
 
 
-class PatientSignupToken(models.Model):
+class PatientInvite(models.Model):
     id = models.CharField(primary_key=True, editable=False, max_length=5)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     first_name = models.CharField('first name', max_length=150, blank=False)
@@ -15,3 +19,12 @@ class PatientSignupToken(models.Model):
         if not self.id:
             self.id = get_random_string(length=5, allowed_chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ' '0123456789')
         super().save(force_insert, force_update, using, update_fields)
+
+    def generate_verify_token(self):
+        claims = {
+            'iat': datetime.utcnow(),
+            'exp': datetime.utcnow() + timedelta(days=1),
+            'code': self.id,
+        }
+        token = jwt.encode(claims, settings.SECRET_KEY, algorithm="HS256")
+        return token

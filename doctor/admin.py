@@ -1,6 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from doctor.models import PatientSignupToken
+from doctor.models import PatientInvite
 
-admin.site.register(PatientSignupToken)
+admin.site.register(PatientInvite)

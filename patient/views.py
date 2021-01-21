@@ -1,3 +1,4 @@
+import jwt
 from dj_rest_auth.views import LoginView
 from rest_framework import status
 from rest_framework.generics import RetrieveAPIView, CreateAPIView, ListAPIView
@@ -7,19 +8,32 @@ from rest_framework.views import APIView
 from core.models import Patient
 from core.serializers import ReportSerializer, VariableInstanceSerializer
 from core.views import RegistrationView
-from doctor.models import PatientSignupToken
-from doctor.serializers import PatientSignupTokenSerializer
+from doctor.models import PatientInvite
+from doctor.serializers import PatientInviteSerializer
 from patient.permissions import IsPatient
 from patient.serializers import PatientRegistrationSerializer, PatientLoginSerializer, PatientSerializer
+from tracker import settings
 
 
-class PatientVerifyTokenView(APIView):
+class PatientVerifyInviteCodeView(APIView):
+    def post(self, request):
+        code = request.data.get('code', None)
+        try:
+            invite = PatientInvite.objects.get(id=code)
+            return Response(data=PatientInviteSerializer(invite).data)
+        except PatientInvite.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class PatientVerifyInviteTokenView(APIView):
     def post(self, request):
         unverified_token = request.data.get('token', None)
         try:
-            token = PatientSignupToken.objects.get(id=unverified_token)
-            return Response(data=PatientSignupTokenSerializer(token).data)
-        except PatientSignupToken.DoesNotExist:
+            decoded = jwt.decode(unverified_token, settings.SECRET_KEY, algorithms=["HS256"])
+            code = decoded.get('code')
+            invite = PatientInvite.objects.get(id=code)
+            return Response(data=PatientInviteSerializer(invite).data)
+        except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 

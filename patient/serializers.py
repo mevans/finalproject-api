@@ -4,7 +4,7 @@ from rest_framework import serializers, exceptions
 
 from core.models import Patient
 from core.serializers import RegistrationSerializer, UserSerializer, VariableInstanceSerializer
-from doctor.models import PatientSignupToken
+from doctor.models import PatientInvite
 from doctor.serializers import DoctorSerializer
 
 
@@ -40,30 +40,30 @@ class PatientSerializer(FlexFieldsModelSerializer):
 
 
 class PatientRegistrationSerializer(RegistrationSerializer):
-    token = serializers.CharField(write_only=True)
+    code = serializers.CharField(write_only=True)
 
     class Meta(RegistrationSerializer.Meta):
-        fields = ['email', 'password', 'password2', 'token']
+        fields = ['email', 'password', 'password2', 'code']
 
-    def validate_token(self, value):
+    def validate_code(self, value):
         try:
-            PatientSignupToken.objects.get(id=value)
-        except PatientSignupToken.DoesNotExist:
-            raise serializers.ValidationError('Invalid token')
+            PatientInvite.objects.get(id=value)
+        except PatientInvite.DoesNotExist:
+            raise serializers.ValidationError('Invalid code')
         return value
 
     def handle_save(self, user):
         user.is_patient = True
         super().handle_save(user)
-        token = PatientSignupToken.objects.get(id=self.validated_data['token'])
-        user.first_name = token.first_name
-        user.last_name = token.last_name
+        invite = PatientInvite.objects.get(id=self.validated_data['code'])
+        user.first_name = invite.first_name
+        user.last_name = invite.last_name
         user.save()
 
-        patient = Patient.objects.create(user=user, doctor=token.doctor)
+        patient = Patient.objects.create(user=user, doctor=invite.doctor)
         patient.save()
 
-        token.delete()
+        invite.delete()
 
 
 class PatientLoginSerializer(LoginSerializer):

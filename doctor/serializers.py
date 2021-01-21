@@ -3,7 +3,7 @@ from rest_framework import serializers, exceptions
 
 from core.models import Doctor, User
 from core.serializers import RegistrationSerializer, UserSerializer
-from doctor.models import PatientSignupToken
+from doctor.models import PatientInvite
 
 
 class DoctorSerializer(serializers.ModelSerializer):
@@ -37,9 +37,9 @@ class DoctorRegistrationSerializer(RegistrationSerializer):
         doctor.save()
 
 
-class PatientSignupTokenSerializer(serializers.ModelSerializer):
+class PatientInviteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PatientSignupToken
+        model = PatientInvite
         fields = '__all__'
 
     def validate_email(self, value):
