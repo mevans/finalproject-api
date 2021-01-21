@@ -155,3 +155,15 @@ FCM_DJANGO_SETTINGS = {
     "ONE_DEVICE_PER_USER": True,
     "DELETE_INACTIVE_DEVICES": True,
 }
+
+FIREBASE_API_KEY = "AIzaSyAyK9FTj-eT7LS8ZXRJ-up2NaXruighOLQ"
+
+ANDROID_PACKAGE_NAME = "uk.co.evans99.matthew.app"
+IOS_BUNDLE_ID = "uk.co.evans99.matthew.app"
+
+EMAIL_ = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "auth.smtp.1and1.co.uk"
+EMAIL_PORT = 25
+EMAIL_HOST_USER = "matthew@evans99.co.uk"
+EMAIL_HOST_PASSWORD = "ishbel2002"
+EMAIL_USE_TLS = True

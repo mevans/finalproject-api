@@ -6,6 +6,7 @@ from core.views import RegistrationView
 from doctor.permissions import IsDoctor
 from doctor.serializers import DoctorRegistrationSerializer, PatientInviteSerializer, DoctorLoginSerializer, \
     DoctorSerializer
+from mailer import mailer
 
 
 class DoctorRegistrationView(RegistrationView):
@@ -15,6 +16,11 @@ class DoctorRegistrationView(RegistrationView):
 class PatientSignupView(CreateAPIView):
     serializer_class = PatientInviteSerializer
     permission_classes = [IsDoctor]
+
+    def perform_create(self, serializer):
+        invite = serializer.save()
+        if invite.email is not None:
+            mailer.send_invite_email(invite)
 
     def post(self, request, *args, **kwargs):
         request.data['doctor'] = request.user

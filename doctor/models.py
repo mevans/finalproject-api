@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.crypto import get_random_string
 
 from core.models import Doctor
+from dynamic_links import dynamic_links
 from tracker import settings
 
 
@@ -13,7 +14,7 @@ class PatientInvite(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     first_name = models.CharField('first name', max_length=150, blank=False)
     last_name = models.CharField('last_name', max_length=150, blank=False)
-    email = models.CharField('email', max_length=150, null=True)
+    email = models.EmailField('email', null=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.id:
@@ -28,3 +29,7 @@ class PatientInvite(models.Model):
         }
         token = jwt.encode(claims, settings.SECRET_KEY, algorithm="HS256")
         return token
+
+    def generate_link(self):
+        token = self.generate_verify_token()
+        return dynamic_links.generate_invite_link(token)
