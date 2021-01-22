@@ -18,7 +18,7 @@ class PatientInvite(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.id:
-            self.id = get_random_string(length=5, allowed_chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ' '0123456789')
+            self.id = get_random_string(length=5, allowed_chars='ABCDEFGHJKMNPQRSTUVWXYZ' '123456789')
         super().save(force_insert, force_update, using, update_fields)
 
     def generate_verify_token(self):
