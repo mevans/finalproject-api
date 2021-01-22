@@ -14,7 +14,7 @@ class PatientInvite(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     first_name = models.CharField('first name', max_length=150, blank=False)
     last_name = models.CharField('last_name', max_length=150, blank=False)
-    email = models.EmailField('email', null=True)
+    email = models.EmailField('email', null=True, unique=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.id:

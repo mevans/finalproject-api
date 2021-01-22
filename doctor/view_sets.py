@@ -1,10 +1,14 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from core.models import Doctor, Variable, VariableInstance, Report
 from core.serializers import VariableSerializer, ReportSerializer
+from doctor.models import PatientInvite
 from doctor.permissions import IsDoctor
+from doctor.serializers import PatientInviteSerializer
+from mailer import mailer
 from patient.serializers import PatientSerializer
 
 
@@ -58,3 +62,21 @@ class ReportsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         doctor = Doctor.objects.get(user=self.request.user)
         return Report.objects.filter(patient__in=doctor.patients.all())
+
+
+class InvitesViewSet(mixins.ListModelMixin,
+                     mixins.DestroyModelMixin,
+                     mixins.RetrieveModelMixin,
+                     GenericViewSet):
+    permission_classes = [IsDoctor]
+    serializer_class = PatientInviteSerializer
+
+    def get_queryset(self):
+        doctor = Doctor.objects.get(user=self.request.user)
+        return PatientInvite.objects.filter(doctor=doctor)
+
+    @action(detail=True, methods=['post'])
+    def resend(self, request, pk=None):
+        invite = self.get_object()
+        mailer.send_invite_email(invite)
+        return Response(status=status.HTTP_200_OK)
