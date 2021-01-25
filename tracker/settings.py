@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -46,7 +47,9 @@ INSTALLED_APPS = [
     'dj_rest_auth',
 
     'corsheaders',
-    'fcm_django'
+    'fcm_django',
+
+    'django_celery_beat',
 ]
 
 REST_FRAMEWORK = {
@@ -167,3 +170,6 @@ EMAIL_PORT = 25
 EMAIL_HOST_USER = "matthew@evans99.co.uk"
 EMAIL_HOST_PASSWORD = "ishbel2002"
 EMAIL_USE_TLS = True
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379/0")
