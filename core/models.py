@@ -1,6 +1,12 @@
+import datetime
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import DateTimeField
+from recurrence.fields import RecurrenceField
+
+from core.utils import rebuild_notifications
 
 
 class CustomUserManager(BaseUserManager):
@@ -109,9 +115,21 @@ class Variable(models.Model):
 class VariableInstance(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     variable = models.ForeignKey(Variable, on_delete=models.CASCADE)
+    schedule = RecurrenceField(null=True)
 
     def __str__(self):
         return '({}) Patient: {}, Variable: {}'.format(self.id, self.patient, self.variable)
+
+    def save(self, *args, **kwargs):
+        created = self.pk is None
+        super(VariableInstance, self).save(*args, **kwargs)
+        if created:
+            self.add_notification_preference()
+        rebuild_notifications(self)
+
+    def add_notification_preference(self):
+        preference = VariableNotificationPreference(instance=self)
+        preference.save()
 
 
 class AbstractVariableType(models.Model):
@@ -149,3 +167,21 @@ class RangeVariableTypeResponse(AbstractVariableResponse):
 
 class ChoiceVariableTypeResponse(AbstractVariableResponse):
     response = models.ForeignKey(ChoiceVariableChoice, on_delete=models.CASCADE)
+
+
+class VariableNotification(models.Model):
+    scheduled_for = DateTimeField()
+    instance = models.ForeignKey(VariableInstance, on_delete=models.CASCADE)
+
+
+class VariableNotificationPreference(models.Model):
+    instance = models.OneToOneField(VariableInstance, on_delete=models.CASCADE, related_name="notification_preference")
+    time = models.TimeField(null=False, default=datetime.time(17, 00))
+    enabled = models.BooleanField(null=False, default=True)
+
+    def save(self, *args, **kwargs):
+        super(VariableNotificationPreference, self).save(*args, **kwargs)
+        if self.enabled:
+            rebuild_notifications(self.instance)
+        else:
+            VariableNotification.objects.filter(instance=self.instance).delete()

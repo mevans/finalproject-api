@@ -1,8 +1,12 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from patient.views import PatientLoginView, PatientRegistrationView, PatientUserView, SubmitReport, VariablesView, \
-    PatientVerifyInviteCodeView, PatientVerifyInviteTokenView
+    PatientVerifyInviteCodeView, PatientVerifyInviteTokenView, VariableNotificationPreferencesView
+
+router = DefaultRouter()
+router.register('notification-preferences', VariableNotificationPreferencesView, basename='notification-preference')
 
 urlpatterns = [
     path('auth/verify-invite-code', PatientVerifyInviteCodeView.as_view(), name="patient verify invite code"),
@@ -12,5 +16,6 @@ urlpatterns = [
     path('auth/refresh-token', TokenRefreshView.as_view(), name="patient refresh token"),
     path('user', PatientUserView.as_view(), name="patient user"),
     path('report', SubmitReport.as_view(), name="submit report"),
-    path('variables', VariablesView.as_view(), name="patient variables")
+    path('variables', VariablesView.as_view(), name="patient variables"),
+    path('', include(router.urls))
 ]

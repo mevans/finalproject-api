@@ -2,7 +2,7 @@ from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
 from core.models import User, Variable, RangeVariableType, ChoiceVariableType, ChoiceVariableChoice, VariableInstance, \
-    Report, RangeVariableTypeResponse, ChoiceVariableTypeResponse
+    Report, RangeVariableTypeResponse, ChoiceVariableTypeResponse, VariableNotificationPreference
 
 
 class JWTSerializer(serializers.Serializer):
@@ -208,3 +208,13 @@ class ReportSerializer(serializers.ModelSerializer):
             ChoiceVariableTypeResponse.objects.create(report=report, **choice_response)
 
         return report
+
+
+class VariableNotificationPreferenceSerializer(FlexFieldsModelSerializer):
+    class Meta:
+        model = VariableNotificationPreference
+        fields = '__all__'
+        read_only_fields = ['instance']
+        expandable_fields = {
+            'instance': VariableInstanceSerializer,
+        }

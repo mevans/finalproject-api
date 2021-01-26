@@ -2,7 +2,8 @@ from django.contrib import admin
 
 # Register your models here.
 from core.models import User, Patient, Doctor, Report, Variable, RangeVariableType, RangeVariableTypeResponse, \
-    VariableInstance, ChoiceVariableType, ChoiceVariableTypeResponse, ChoiceVariableChoice
+    VariableInstance, ChoiceVariableType, ChoiceVariableTypeResponse, ChoiceVariableChoice, VariableNotification, \
+    VariableNotificationPreference
 
 admin.site.register(User)
 admin.site.register(Patient)
@@ -11,6 +12,8 @@ admin.site.register(Doctor)
 admin.site.register(Report)
 admin.site.register(Variable)
 admin.site.register(VariableInstance)
+admin.site.register(VariableNotification)
+admin.site.register(VariableNotificationPreference)
 
 admin.site.register(RangeVariableType)
 admin.site.register(RangeVariableTypeResponse)

@@ -1,12 +1,13 @@
 import jwt
 from dj_rest_auth.views import LoginView
-from rest_framework import status
+from rest_framework import status, mixins
 from rest_framework.generics import RetrieveAPIView, CreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
-from core.models import Patient
-from core.serializers import ReportSerializer, VariableInstanceSerializer
+from core.models import Patient, VariableNotificationPreference
+from core.serializers import ReportSerializer, VariableInstanceSerializer, VariableNotificationPreferenceSerializer
 from core.views import RegistrationView
 from doctor.models import PatientInvite
 from doctor.serializers import PatientInviteSerializer
@@ -67,3 +68,14 @@ class VariablesView(ListAPIView):
 class SubmitReport(CreateAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsPatient]
+
+
+class VariableNotificationPreferencesView(mixins.ListModelMixin,
+                                          mixins.UpdateModelMixin,
+                                          GenericViewSet):
+    serializer_class = VariableNotificationPreferenceSerializer
+    permission_classes = [IsPatient]
+
+    def get_queryset(self):
+        patient = self.request.user.patient
+        return VariableNotificationPreference.objects.filter(instance__patient=patient)

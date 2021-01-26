@@ -9,8 +9,8 @@ app = Celery("core")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
 app.conf.beat_schedule = {
-    'every-15-seconds': {
-        'task': 'patient.tasks.send_email',
+    'variable-notifications': {
+        'task': 'core.tasks.send_variable_notifications',
         'schedule': 15,
     }
 }
