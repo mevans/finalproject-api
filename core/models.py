@@ -1,5 +1,6 @@
 import datetime
 
+from django.apps import apps
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -75,6 +76,13 @@ class Patient(models.Model):
 
     def get_instances(self):
         return VariableInstance.objects.filter(patient=self)
+
+    def save(self, *args, **kwargs):
+        created = self.pk is None
+        super(Patient, self).save(*args, **kwargs)
+        if created:
+            preferences = apps.get_model('patient.PatientPreferences')(patient=self)
+            preferences.save()
 
 
 class Report(models.Model):

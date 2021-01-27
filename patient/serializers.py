@@ -6,6 +6,7 @@ from core.models import Patient
 from core.serializers import RegistrationSerializer, UserSerializer, VariableInstanceSerializer
 from doctor.models import PatientInvite
 from doctor.serializers import DoctorSerializer
+from patient.models import PatientPreferences
 
 
 class PatientSerializer(FlexFieldsModelSerializer):
@@ -73,3 +74,10 @@ class PatientLoginSerializer(LoginSerializer):
         if not user.is_patient:
             raise exceptions.ValidationError("Only patients can login to this site")
         return validated
+
+
+class PatientPreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientPreferences
+        fields = '__all__'
+        read_only_fields = ['patient']

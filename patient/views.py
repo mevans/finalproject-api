@@ -12,7 +12,8 @@ from core.views import RegistrationView
 from doctor.models import PatientInvite
 from doctor.serializers import PatientInviteSerializer
 from patient.permissions import IsPatient
-from patient.serializers import PatientRegistrationSerializer, PatientLoginSerializer, PatientSerializer
+from patient.serializers import PatientRegistrationSerializer, PatientLoginSerializer, PatientSerializer, \
+    PatientPreferencesSerializer
 from tracker import settings
 
 
@@ -79,3 +80,19 @@ class VariableNotificationPreferencesView(mixins.ListModelMixin,
     def get_queryset(self):
         patient = self.request.user.patient
         return VariableNotificationPreference.objects.filter(instance__patient=patient)
+
+
+class PatientPreferencesView(APIView):
+    permission_classes = [IsPatient]
+
+    def get(self, request):
+        patient = request.user.patient
+        preferences = patient.preferences
+        return Response(PatientPreferencesSerializer(preferences).data)
+
+    def patch(self, request):
+        patient = request.user.patient
+        serializer = PatientPreferencesSerializer(patient.preferences, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        preferences = serializer.save()
+        return Response(PatientPreferencesSerializer(preferences).data)

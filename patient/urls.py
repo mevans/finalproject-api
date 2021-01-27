@@ -3,7 +3,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from patient.views import PatientLoginView, PatientRegistrationView, PatientUserView, SubmitReport, VariablesView, \
-    PatientVerifyInviteCodeView, PatientVerifyInviteTokenView, VariableNotificationPreferencesView
+    PatientVerifyInviteCodeView, PatientVerifyInviteTokenView, VariableNotificationPreferencesView, \
+    PatientPreferencesView
 
 router = DefaultRouter()
 router.register('notification-preferences', VariableNotificationPreferencesView, basename='notification-preference')
@@ -17,5 +18,6 @@ urlpatterns = [
     path('user', PatientUserView.as_view(), name="patient user"),
     path('report', SubmitReport.as_view(), name="submit report"),
     path('variables', VariablesView.as_view(), name="patient variables"),
+    path('preferences', PatientPreferencesView.as_view(), name="patient preferences"),
     path('', include(router.urls))
 ]
