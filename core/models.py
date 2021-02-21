@@ -78,11 +78,9 @@ class Patient(models.Model):
         return VariableInstance.objects.filter(patient=self)
 
     def save(self, *args, **kwargs):
-        created = self.pk is None
         super(Patient, self).save(*args, **kwargs)
-        if created:
-            preferences = apps.get_model('patient.PatientPreferences')(patient=self)
-            preferences.save()
+        preferences_model = apps.get_model('patient.PatientPreferences')
+        preferences_model.objects.get_or_create(patient=self)
 
 
 class Report(models.Model):
