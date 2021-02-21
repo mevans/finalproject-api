@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from core.models import Doctor, Variable, VariableInstance, Report
-from core.serializers import VariableSerializer, ReportSerializer
+from core.serializers import VariableSerializer, ReportSerializer, VariableInstanceSerializer
 from doctor.models import PatientInvite
 from doctor.permissions import IsDoctor
 from doctor.serializers import PatientInviteSerializer
@@ -80,3 +80,12 @@ class InvitesViewSet(mixins.ListModelMixin,
         invite = self.get_object()
         mailer.send_invite_email(invite)
         return Response(status=status.HTTP_200_OK)
+
+
+class VariableInstancesViewSet(mixins.UpdateModelMixin, GenericViewSet):
+    permission_classes = [IsDoctor]
+    serializer_class = VariableInstanceSerializer
+
+    def get_queryset(self):
+        doctor = Doctor.objects.get(user=self.request.user)
+        return VariableInstance.objects.filter(patient__in=doctor.patients.all())
