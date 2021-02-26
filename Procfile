@@ -1,2 +1,2 @@
 web: gunicorn tracker.wsgi
-worker: celery -A tracker worker -l INFO --concurrency 2
+worker: celery -A tracker worker -l INFO --concurrency 2 --beat
