@@ -13,6 +13,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+import django_heroku
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -181,3 +183,6 @@ CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",
                                    "redis://:pb566d0c906ff52fa7eebb7656c6151cc5536eabaa955500a823cefd61f7fa5d1@ec2-34-241-222-85.eu-west-1.compute.amazonaws.com:12479")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND",
                                        "redis://:pb566d0c906ff52fa7eebb7656c6151cc5536eabaa955500a823cefd61f7fa5d1@ec2-34-241-222-85.eu-west-1.compute.amazonaws.com:12479")
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
