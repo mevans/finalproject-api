@@ -1,3 +1,5 @@
+import dj_database_url
+
 from .settings import *
 
 DEBUG = False
@@ -9,4 +11,7 @@ MIDDLEWARE = MIDDLEWARE + [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-print('here')
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
+
+print('PRODUCTION MODE ACTIVE')

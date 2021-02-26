@@ -13,8 +13,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-import django_heroku
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -99,12 +97,8 @@ WSGI_APPLICATION = 'tracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "d6o64nasf361ad",
-        'HOST': "ec2-54-74-156-137.eu-west-1.compute.amazonaws.com",
-        'USER': "fgcnxbiqxeybhw",
-        'PASSWORD': "61ad9e6fca95ebf0ea44d8e2618502106050ea4d7393afe8f6aee988a8fab5bd",
-        'PORT': '5432'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3'
     }
 }
 
@@ -179,10 +173,5 @@ EMAIL_HOST_USER = "matthew@evans99.co.uk"
 EMAIL_HOST_PASSWORD = "ishbel2002"
 EMAIL_USE_TLS = True
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",
-                                   "redis://:pb566d0c906ff52fa7eebb7656c6151cc5536eabaa955500a823cefd61f7fa5d1@ec2-34-241-222-85.eu-west-1.compute.amazonaws.com:12479")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND",
-                                       "redis://:pb566d0c906ff52fa7eebb7656c6151cc5536eabaa955500a823cefd61f7fa5d1@ec2-34-241-222-85.eu-west-1.compute.amazonaws.com:12479")
-
-# Activate Django-Heroku.
-django_heroku.settings(locals())
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379/0")
