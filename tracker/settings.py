@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'fcm_django',
 
-    'django_celery_beat',
     'recurrence',
 ]
 
