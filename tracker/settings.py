@@ -177,5 +177,7 @@ EMAIL_HOST_USER = "matthew@evans99.co.uk"
 EMAIL_HOST_PASSWORD = "ishbel2002"
 EMAIL_USE_TLS = True
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379/0")
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",
+                                   "redis://:pb566d0c906ff52fa7eebb7656c6151cc5536eabaa955500a823cefd61f7fa5d1@ec2-34-241-222-85.eu-west-1.compute.amazonaws.com:12479")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND",
+                                       "redis://:pb566d0c906ff52fa7eebb7656c6151cc5536eabaa955500a823cefd61f7fa5d1@ec2-34-241-222-85.eu-west-1.compute.amazonaws.com:12479")
