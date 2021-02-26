@@ -23,6 +23,7 @@ fcm-django==0.3.7
 idna==2.10
 kombu==5.0.2
 prompt-toolkit==3.0.13
+psycopg2-binary==2.8.6
 pyfcm==1.4.9
 PyJWT==2.0.1
 python-crontab==2.5.1
@@ -36,3 +37,4 @@ sqlparse==0.4.1
 urllib3==1.26.2
 vine==5.0.0
 wcwidth==0.2.5
+whitenoise==5.2.0

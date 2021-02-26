@@ -97,8 +97,12 @@ WSGI_APPLICATION = 'tracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "d6o64nasf361ad",
+        'HOST': "ec2-54-74-156-137.eu-west-1.compute.amazonaws.com",
+        'USER': "fgcnxbiqxeybhw",
+        'PASSWORD': "61ad9e6fca95ebf0ea44d8e2618502106050ea4d7393afe8f6aee988a8fab5bd",
+        'PORT': '5432'
     }
 }
 
@@ -151,6 +155,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 CORS_ORIGIN_ALLOW_ALL = True
 
